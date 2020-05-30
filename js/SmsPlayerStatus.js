@@ -11,13 +11,11 @@ Date.prototype.addHours = function (h) {
 
 async function display(player, cards) {
 	return new Promise(async function (resolve, reject) {
-		let details = await getPlayerDetails(player)
-		let quest = await get_player_quests(player);
-		let ids = await getClaimIds(player);
+		const [details,quest,ids,balances,rarityMap] = await Promise.all([getPlayerDetails(player),get_player_quests(player),getClaimIds(player),get_balances(player),getAllCards(player)]);
+		
 		let images = await getImage(ids, cards);
 		// let rc = await get_player_rc(player);
-		let balances = await get_balances(player);
-		let rarityMap = await getAllCards(player);
+		
 		let dec = 0, ecr = 0, legendary = 0, gold = 0, orb = 0;
 		let common = 0, common_gold = 0, rare = 0, rare_gold = 0, epic = 0, epic_gold = 0, legend = 0, legend_gold = 0;
 		for (let [k, v] of rarityMap) {
@@ -89,11 +87,11 @@ async function display(player, cards) {
 			created_date = new Date(quest[0]['created_date']);
 			reset_time = created_date.addHours(23);
 		}
-		let htmlString = '';
-		htmlString += '<tr>';
-		htmlString += '<td><span class="names">Player</span></td>';
-		htmlString += `<td>${details.name}</td>`;
-		htmlString += '</tr>';
+		
+	  let table =`<table id="dvlist" class="table is-fullwidth"><tbody><tr>`
+	  table += '<td><span class="names">Player</span></td>';
+	  table += `<td>${details.name}</td>`;
+	  table += '</tr>';
 		// htmlString += '<tr>';
 
 		// htmlString += '<tr>';
@@ -101,82 +99,87 @@ async function display(player, cards) {
 		// htmlString += `<td>${rc}%</td>`;
 		// htmlString += '</tr>';
 
-		htmlString += '<tr>';
-		htmlString += '<td><span class="names">Current Rating</span></td>';
-		htmlString += `<td>${details.rating}/${details.season_max_rating}</td>`;
-		htmlString += '</tr>';
+		table += '<tr>';
+		table += '<td><span class="names">Current Rating</span></td>';
+		table += `<td>${details.rating}/${details.season_max_rating}</td>`;
+		table += '</tr>';
 
-		htmlString += '<tr>';
-		htmlString += '<td><span class="names">Current Capture Rate</span></td>';
-		htmlString += `<td>${ecr / 100}%</td>`;
-		htmlString += '</tr>';
+		table += '<tr>';
+		table += '<td><span class="names">Current Capture Rate</span></td>';
+		table += `<td>${ecr / 100}%</td>`;
+		table += '</tr>';
 
-		htmlString += '<tr>';
-		htmlString += '<td><span class="names">DEC Balances</span></td>';
-		htmlString += `<td>${dec}</td>`;
-		htmlString += '</tr>';
+		table += '<tr>';
+		table += '<td><span class="names">DEC Balances</span></td>';
+		table += `<td>${dec}</td>`;
+		table += '</tr>';
 
-		htmlString += '<tr>';
-		htmlString += '<td><span class="names">ORB</span></td>';
-		htmlString += `<td>${orb}</td>`;
-		htmlString += '</tr>';
+		table += '<tr>';
+		table += '<td><span class="names">ORB</span></td>';
+		table += `<td>${orb}</td>`;
+		table += '</tr>';
 
-		htmlString += '<tr>';
-		htmlString += '<td><span class="names">Potion Stats</span></td>';
-		htmlString += `<td>Legendary Potion: ${legendary}<br/>Gold Potion: ${gold}</td>`;
-		htmlString += '</tr>';
-
-
+		table += '<tr>';
+		table += '<td><span class="names">Potion Stats</span></td>';
+		table += `<td>Legendary Potion: ${legendary}<br/>Gold Potion: ${gold}</td>`;
+		table += '</tr>';
 
 
-		htmlString += '<tr>';
-		htmlString += '<td><span class="names">Collection Stats</span></td>';
-		htmlString += `<td>Common: ${common} | Gold: ${common_gold}<br/>Rare:  ${rare} | Gold: ${rare_gold}<br/>Epic: ${epic} | Gold: ${epic_gold}<br/>Legendary: ${legend} | Gold: ${legend_gold}</td>`;
-		htmlString += '</tr>';
 
 
-		htmlString += '<tr>';
-		htmlString += '<td><span class="names">Daily Quest</span></td>';
+		table += '<tr>';
+		table += '<td><span class="names">Collection Stats</span></td>';
+		table += `<td>Common: ${common} | Gold: ${common_gold}<br/>Rare:  ${rare} | Gold: ${rare_gold}<br/>Epic: ${epic} | Gold: ${epic_gold}<br/>Legendary: ${legend} | Gold: ${legend_gold}</td>`;
+		table += '</tr>';
+
+
+		table += '<tr>';
+		table += '<td><span class="names">Daily Quest</span></td>';
 		if (quest[0] === undefined) {
-			htmlString += `<td> N/A </td>`;
+			table += `<td> N/A </td>`;
 		} else {
-			htmlString += `<td>${quest[0].name} (${quest[0].completed_items}/${quest[0].total_items})</td>`;
+			table += `<td>${quest[0].name} (${quest[0].completed_items}/${quest[0].total_items})</td>`;
 		}
-		htmlString += '</tr>';
+		table += '</tr>';
 		if (status === 'Completed') {
-			htmlString += '<tr>';
-			htmlString += '<td><span class="names">Next Quest Time</span></td>';
-			htmlString += `<td>${reset_time}</td>`;
-			htmlString += '</tr>';
+			table += '<tr>';
+			table += '<td><span class="names">Next Quest Time</span></td>';
+			table += `<td>${reset_time}</td>`;
+			table += '</tr>';
 		}
 
-		htmlString += '<tr>';
-		htmlString += '<td><span class="names">Total Wins/Battles</span></td>';
-		htmlString += `<td>${details.win}/${details.battle} = ${details.win_rate}%</td>`;
-		htmlString += '</tr>';
-		htmlString += '<tr>';
-		htmlString += '<td><span class="names">Season Total Wins/Battles</span></td>';
-		htmlString += `<td>${details.season_win}/${details.season_battle} = ${details.season_win_rate}%</td>`;
-		htmlString += '</tr>';
-		htmlString += '<tr>';
-		htmlString += '<td><span class="names">Season League</span></td>';
-		htmlString += `<td>${details.league} (${details.reward} Loot Chests)</td>`;
-		htmlString += '</tr>';
+		table += '<tr>';
+		table += '<td><span class="names">Total Wins/Battles</span></td>';
+		table += `<td>${details.win}/${details.battle} = ${details.win_rate}%</td>`;
+		table += '</tr>';
+		table += '<tr>';
+		table += '<td><span class="names">Season Total Wins/Battles</span></td>';
+		table += `<td>${details.season_win}/${details.season_battle} = ${details.season_win_rate}%</td>`;
+		table += '</tr>';
+		table += '<tr>';
+		table += '<td><span class="names">Season League</span></td>';
+		table += `<td>${details.league} (${details.reward} Loot Chests)</td>`;
+		table += '</tr>';
 
-		htmlString += '<tr>';
-		htmlString += '<td><span class="names">The Most Recent Loot Chests Claimed</span></td>';
+		table += '<tr>';
+		table += '<td><span class="names">The Most Recent Loot Chests Claimed</span></td>';
 		let imagesString = '';
 		for (let i in images) {
 			let image = `<div><img src="${images[i].url}" width="100px" height="150px"><ul><span>${images[i].quantity}</span></ul>`;
 			imagesString += image + '</div>';
 		}
-		htmlString += `<td><div class="row">${imagesString}</div></td>`;
-		htmlString += '</tr>';
-
-		htmlString += '<tr>';
-		htmlString += '<td></td>';
-		htmlString += `<td></td>`;
-		htmlString += '</tr>';
+		table += `<td><div class="row">${imagesString}</div></td>`;
+		table += '</tbody></tr></table>';
+		let htmlString = '';
+		htmlString += `<article class="message is-info">
+		<div class="message-header">
+			<a data-toggle="collapse" data-parent="#accordion" href="#${player}">
+			${player}</a>
+		</div>
+		<div id="${player}" class="panel-collapse collapse in">
+		  <div class="message-body">${table}</div>
+		</div>
+	  </article>`;
 
 		resolve(htmlString);
 	});
@@ -546,10 +549,10 @@ $(document).ready(async function () {
 
 		$('#log').val('');
 		$('div#display').html('');
-		$('div#summary').html(`Loading...`)
+		$('div#summary').html(`<div class="loader"></div>`)
 		const input = $('#username').val();
 		let usernames = input.split(',');
-		let htmlString = '<table id="dvlist" class="display" style="width:100%">';
+		let htmlString = '	<div class="panel-group" id="accordion">';
 		let cards = await get_details();
 		totalRewards = 0, totalDec = 0, totalLegendary = 0, totalGold = 0, totalOrb = 0, totalCommon = 0, totalCommonGold = 0, totalRare = 0, totalRareGold = 0, totalEpic = 0, totalEpicGold = 0, totalLegend = 0, totalLegendGold = 0;
 		leagues = [];
@@ -558,14 +561,17 @@ $(document).ready(async function () {
 			let string = await display(username, cards);
 			htmlString += string;
 		}
-		htmlString += `</table>`;
-		let summary = `<B>Total Season Loot Chests:</B>${totalRewards}<br/><B>Total DEC:</B>${totalDec.toFixed(3)}<br/><B>Total Legendary/Gold Potion:</B>${totalLegendary}/${totalGold}<br/><B>Total Orb:</B>${totalOrb}
+		htmlString += `</div>`;
+		console.log(htmlString)
+		let summary = `<article class="message"><div class="message-body"><h3 class="has-text-weight-bold is-size-5 is-marg-bt-5">Summary</h3><B>Total Season Loot Chests:</B>${totalRewards}<br/><B>Total DEC:</B>${totalDec.toFixed(3)}<br/><B>Total Legendary/Gold Potion:</B>${totalLegendary}/${totalGold}<br/><B>Total Orb:</B>${totalOrb}
 		<br/><B>Total Common/Gold Cards</B>: ${totalCommon}/${totalCommonGold}<br/><B>Total Rare/Gold Cards</B>: ${totalRare}/${totalRareGold}<br/><B>Total Epic/Gold Cards</B>: ${totalEpic}/${totalEpicGold}<br/><B>Total Legendary/Gold Cards</B>: ${totalLegend}/${totalLegendGold}`;
 		for (let league of leagues) {
 			summary += `<br/><B>League:</B>${league.name} <B>Count:</B>${league.count}`;
 		}
-		$('div#summary').html(summary);
+		$('div#summary').html(summary+"</div>");
 		$('div#display').html(htmlString);
+		let x = document.getElementById("pleaseWait");
+		x.style.display = "none";
 
 	});
 });

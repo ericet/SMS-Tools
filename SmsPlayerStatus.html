@@ -4,61 +4,86 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-		integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-	<title>Steemmonsters Player Explorer</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+		integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+		integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+	<title>Splinterlands Player Explorer</title>
 	<style>
-		table {
-			font-family: arial, sans-serif;
-			border-collapse: collapse;
-			width: 100%;
+		.names {
+			font-weight: bold;
+			font-size: large;
 		}
 
-		td,
-		th {
-			border: 1px solid #dddddd;
-			text-align: left;
-			padding: 8px;
+		.Site-content {
+			flex: 1;
+		}
+		.loader {
+			margin: auto;
+			border: 16px solid #f3f3f3;
+			border-radius: 50%;
+			border-top: 16px solid #3498db;
+			width: 120px;
+			height: 120px;
+			animation: spin 2s linear infinite;
 		}
 
-		tr:nth-child(even) {
-			background-color: #dddddd;
-		}
+		@keyframes spin {
+			0% {
+				transform: rotate(0deg);
+			}
 
-		.names { font-weight: bold;
-			font-size: large; }
+			100% {
+				transform: rotate(360deg);
+			}
+		}
 	</style>
 </head>
 
 <body>
-	<div class="container pt-3">
-		<h1 style="display: inline;"">Steemmonsters Player Explorer</h1>
-		<h5 style="display: inline;">by <a href="https://steemit.com/@ericet" target="_blank" rel="nofollow"">@ericet</a></h5>
-			<br />
-			<br />
+	<div class="Site-content">
 
-			<form id="view" method="POST">
-				<div class="row">
-					<div class="col-md-3 col-lg-8">
-						<div class="form-group">
-							<label for="username" class="sr-only">Username</label>
-							<input type="text" name="username" id="username" autocomplete="off" class="form-control"
-								placeholder="Username" required>
-						</div>
-					</div>
-					<div class="col-md-3 col-lg-2">
-						<button class="btn btn-success btn-block" type="submit" id="search">View</button>
-					</div>
+		<div style="text-align: center;">
+			<a href="/" style="display: inline-block;">
+				<img src="https://www.blockchaingamer.biz/wp-content/uploads/2019/04/Splinterlands.png" height="100px" width="400px">
+			</a>
+			<h1 class="title is-2">SPLINTERLANDS Player Explorer</h1>
+			<br>
 
-				</div>
-				<div id='summary'>
-				</div>
-				<div name='display' id='display'></div>
-			</form>
-			</form>
+		</div>
+		
+		<div class="content column is-half is-offset-one-quarter">
+			<div class="control">
+				<form id="view">
+					<div class="field has-addons">
+						<input class="input is-medium" type="search" placeholder="Username(s)" id="username">
+						<button class="button is-info is-medium" type="sumbit" id="search"> <i
+								class="fa fa-search"></i></button>
+					</div>
+				</form>
+				
+			</div>
+			<div class="block">
+				<div id='summary' />
+			</div>
+			<div class="block">
+				<div id='display'></div>
+
+			</div>
+		</div>
+
+
+
 	</div>
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+		integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+		integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
 		crossorigin="anonymous"></script>
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 	<script src="js/SmsPlayerStatus.js"></script>
