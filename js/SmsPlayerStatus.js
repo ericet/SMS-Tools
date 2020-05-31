@@ -469,18 +469,19 @@ function getPlayerDetails(player) {
 	return new Promise(async function (resolve, reject) {
 		let playerDetails = new Object();
 		let detail = await get_player_details(player);
-		if (detail != 'error' && detail.season_details.battles != null) {
+		console.log(detail)
+		if (detail != 'error') {
 			playerDetails.name = detail.name;
 			playerDetails.rating = detail.rating;
 			playerDetails.battle = detail.battles;
 			playerDetails.win = detail.wins;
 			playerDetails.win_rate = (detail.wins / detail.battles * 100).toFixed(2);
 			playerDetails.capture_rate = detail.capture_rate;
-			playerDetails.season_battle = detail.season_details.battles;
-			playerDetails.season_win = detail.season_details.wins;
-			playerDetails.season_max_rating = detail.season_details.max_rating;
+			playerDetails.season_battle = detail.season_details===null?0:detail.season_details.battles;
+			playerDetails.season_win = detail.season_details===null?0:detail.season_details.wins;
+			playerDetails.season_max_rating = detail.season_details===null?playerDetails.rating:detail.season_details.max_rating;
 			playerDetails.season_win_rate = (playerDetails.season_win / playerDetails.season_battle * 100).toFixed(2)
-			let seasonRating = detail.season_details.max_rating;
+			let seasonRating = detail.season_details===null?playerDetails.rating:detail.season_details.max_rating;
 			if (seasonRating >= 0 && seasonRating <= 99) {
 				playerDetails.league = 'Novice';
 				playerDetails.reward = 0;
