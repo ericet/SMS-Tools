@@ -176,7 +176,7 @@ async function display(player, cards) {
 			<a data-toggle="collapse" data-parent="#accordion" href="#${player}">
 			${player}</a>
 		</div>
-		<div id="${player}" class="panel-collapse collapse in">
+		<div id="${player}" class="panel-collapse collapse show">
 		  <div class="message-body">${table}</div>
 		</div>
 	  </article>`;
@@ -561,13 +561,31 @@ $(document).ready(async function () {
 			let string = await display(username, cards);
 			htmlString += string;
 		}
-		htmlString += `</div>`;
-		console.log(htmlString)
-		let summary = `<article class="message"><div class="message-body"><h3 class="has-text-weight-bold is-size-5 is-marg-bt-5">Summary</h3><B>Total Season Loot Chests:</B>${totalRewards}<br/><B>Total DEC:</B>${totalDec.toFixed(3)}<br/><B>Total Legendary/Gold Potion:</B>${totalLegendary}/${totalGold}<br/><B>Total Orb:</B>${totalOrb}
-		<br/><B>Total Common/Gold Cards</B>: ${totalCommon}/${totalCommonGold}<br/><B>Total Rare/Gold Cards</B>: ${totalRare}/${totalRareGold}<br/><B>Total Epic/Gold Cards</B>: ${totalEpic}/${totalEpicGold}<br/><B>Total Legendary/Gold Cards</B>: ${totalLegend}/${totalLegendGold}`;
+		htmlString += `</div>`;	
+		let leagueHtml ='';
 		for (let league of leagues) {
-			summary += `<br/><B>League:</B>${league.name} <B>Count:</B>${league.count}`;
+			leagueHtml += `${league.name}(${league.count}) `;
 		}
+		let summary =`<div class="row">
+		<div class="column">
+			<div class="title"><i class="fas fa-wallet"></i> Summary</div>
+			<div class="main">Total Season Loot Chests: ${totalRewards}</div>
+			<div class="main">League: ${leagueHtml}</div>
+			<div class="main">Total DEC:${totalDec.toFixed(3)}</div>
+			<div class="main">Total Legendary/Gold Potion:${totalLegendary}/${totalGold}</div>
+			<div class="main">Total Orb:${totalOrb}</div>
+
+		</div>
+		<div class="column">
+			<div class="title"><i class="fas fa-award"></i> Cards</div>
+			<div class="main">Total Common/Gold Cards: ${totalCommon}/${totalCommonGold}</div>
+			<div class="main">Total Rare/Gold Cards: ${totalRare}/${totalRareGold}</div>
+			<div class="main">Total Epic/Gold Cards: ${totalEpic}/${totalEpicGold}</div>
+			<div class="main">Total Legendary/Gold Cards: ${totalLegend}/${totalLegendGold}</div>
+
+		</div>
+	</div>`
+
 		$('div#summary').html(summary+"</div>");
 		$('div#display').html(htmlString);
 		let x = document.getElementById("pleaseWait");

@@ -19,6 +19,7 @@
 		.Site-content {
 			flex: 1;
 		}
+
 		.loader {
 			margin: auto;
 			border: 16px solid #f3f3f3;
@@ -38,21 +39,52 @@
 				transform: rotate(360deg);
 			}
 		}
+
+		.row {
+			display: flex;
+			margin: 0px auto;
+			max-width: 800px;
+		}
+
+		.column {
+			flex: 40%;
+			padding: 10px;
+		}
+		.mainText {
+			text-align: center;
+			font-size: 3vw;
+			font-family: fantasy;
+			font-weight: bold;
+		}
+		.main {
+			font-size: 15px;
+			text-align: left;
+			padding: 2px;
+			margin-top: 3px;
+			border-bottom: 1px solid #f1f1f1;
+			width: 100%
+		}
+		.title {
+			font-size: 18px;
+			font-weight: bold;
+		}
 	</style>
 </head>
 
-<body>
+<body style="font-family:Verdana;">
+
 	<div class="Site-content">
 
 		<div style="text-align: center;">
 			<a href="/" style="display: inline-block;">
-				<img src="https://www.blockchaingamer.biz/wp-content/uploads/2019/04/Splinterlands.png" height="100px" width="400px">
+				<img src="https://www.blockchaingamer.biz/wp-content/uploads/2019/04/Splinterlands.png" height="100px"
+					width="400px">
 			</a>
-			<h1 class="title is-2">SPLINTERLANDS Player Explorer</h1>
+			<h1 class="title is-2">Player Explorer</h1>
 			<br>
 
 		</div>
-		
+
 		<div class="content column is-half is-offset-one-quarter">
 			<div class="control">
 				<form id="view">
@@ -62,16 +94,19 @@
 								class="fa fa-search"></i></button>
 					</div>
 				</form>
-				
+
 			</div>
-			<div class="block">
-				<div id='summary' />
+			<div style="margin-top:1%">
+				<div id='summary'/>
 			</div>
-			<div class="block">
+			<div style="margin-top:1%">
 				<div id='display'></div>
 
 			</div>
+
 		</div>
+
+
 
 
 
