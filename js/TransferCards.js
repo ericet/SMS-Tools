@@ -1,6 +1,6 @@
-const client = new dsteem.Client('https://api.steem.bts.tw');
+const client = new dsteem.Client('https://api.hive.blog');
 steem.api.setOptions({
-	url: 'https://api.steem.bts.tw'
+	url: 'https://api.hive.blog'
 });
 
 // Checking if the already exists
