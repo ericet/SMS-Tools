@@ -9,13 +9,14 @@ Date.prototype.addHours = function (h) {
 	return this;
 }
 
+
 async function display(player, cards) {
 	return new Promise(async function (resolve, reject) {
-		const [details,quest,ids,balances,rarityMap] = await Promise.all([getPlayerDetails(player),get_player_quests(player),getClaimIds(player),get_balances(player),getAllCards(player)]);
-		
+		const [details, quest, ids, balances, rarityMap] = await Promise.all([getPlayerDetails(player), get_player_quests(player), getClaimIds(player), get_balances(player), getAllCards(player)]);
+
 		let images = await getImage(ids, cards);
-		// let rc = await get_player_rc(player);
-		
+		let rc = await get_player_rc(player);
+
 		let dec = 0, ecr = 0, legendary = 0, gold = 0, orb = 0;
 		let common = 0, common_gold = 0, rare = 0, rare_gold = 0, epic = 0, epic_gold = 0, legend = 0, legend_gold = 0;
 		for (let [k, v] of rarityMap) {
@@ -87,17 +88,11 @@ async function display(player, cards) {
 			created_date = new Date(quest[0]['created_date']);
 			reset_time = created_date.addHours(23);
 		}
-		
-	  let table =`<table id="dvlist" class="table is-fullwidth"><tbody><tr>`
-	  table += '<td><span class="names">Player</span></td>';
-	  table += `<td>${details.name}</td>`;
-	  table += '</tr>';
-		// htmlString += '<tr>';
 
-		// htmlString += '<tr>';
-		// htmlString += '<td><span class="names">Resource Credits</span></td>';
-		// htmlString += `<td>${rc}%</td>`;
-		// htmlString += '</tr>';
+		let table = `<table id="dvlist" class="table is-fullwidth"><tbody><tr>`
+		table += '<td><span class="names">Resource Credits</span></td>';
+		table += `<td>${rc}%</td>`;
+		table += '</tr>';
 
 		table += '<tr>';
 		table += '<td><span class="names">Current Rating</span></td>';
@@ -477,11 +472,11 @@ function getPlayerDetails(player) {
 			playerDetails.win = detail.wins;
 			playerDetails.win_rate = (detail.wins / detail.battles * 100).toFixed(2);
 			playerDetails.capture_rate = detail.capture_rate;
-			playerDetails.season_battle = detail.season_details===null?0:detail.season_details.battles;
-			playerDetails.season_win = detail.season_details===null?0:detail.season_details.wins;
-			playerDetails.season_max_rating = detail.season_details===null?playerDetails.rating:detail.season_details.max_rating;
+			playerDetails.season_battle = detail.season_details === null ? 0 : detail.season_details.battles;
+			playerDetails.season_win = detail.season_details === null ? 0 : detail.season_details.wins;
+			playerDetails.season_max_rating = detail.season_details === null ? playerDetails.rating : detail.season_details.max_rating;
 			playerDetails.season_win_rate = (playerDetails.season_win / playerDetails.season_battle * 100).toFixed(2)
-			let seasonRating = detail.season_details===null?playerDetails.rating:detail.season_details.max_rating;
+			let seasonRating = detail.season_details === null ? playerDetails.rating : detail.season_details.max_rating;
 			if (seasonRating >= 0 && seasonRating <= 99) {
 				playerDetails.league = 'Novice';
 				playerDetails.reward = 0;
@@ -544,7 +539,6 @@ function getPlayerDetails(player) {
 }
 
 $(document).ready(async function () {
-
 	$('#view').submit(async function (e) {
 		e.preventDefault();
 
@@ -562,12 +556,12 @@ $(document).ready(async function () {
 			let string = await display(username, cards);
 			htmlString += string;
 		}
-		htmlString += `</div>`;	
-		let leagueHtml ='';
+		htmlString += `</div>`;
+		let leagueHtml = '';
 		for (let league of leagues) {
 			leagueHtml += `${league.name}(${league.count}) `;
 		}
-		let summary =`<div class="row">
+		let summary = `<div class="row">
 		<div class="column">
 			<div class="title"><i class="fas fa-wallet"></i> Summary</div>
 			<div class="main">Total Season Loot Chests: ${totalRewards}</div>
@@ -587,7 +581,7 @@ $(document).ready(async function () {
 		</div>
 	</div>`
 
-		$('div#summary').html(summary+"</div>");
+		$('div#summary').html(summary + "</div>");
 		$('div#display').html(htmlString);
 		let x = document.getElementById("pleaseWait");
 		x.style.display = "none";
