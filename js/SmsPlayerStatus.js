@@ -89,19 +89,11 @@ async function display(player, cards) {
 			reset_time = created_date.addHours(23);
 		}
 
-		let table = `<table id="dvlist" class="table is-fullwidth"><tbody><tr>`
-		table += '<td><span class="names">Resource Credits</span></td>';
-		table += `<td>${rc}%</td>`;
-		table += '</tr>';
-
+		let table = `<table id="dvlist" class="table is-fullwidth"><tbody>`
+	
 		table += '<tr>';
 		table += '<td><span class="names">Current Rating</span></td>';
-		table += `<td>${details.rating}/${details.season_max_rating}</td>`;
-		table += '</tr>';
-
-		table += '<tr>';
-		table += '<td><span class="names">Current Capture Rate</span></td>';
-		table += `<td>${ecr / 100}%</td>`;
+		table += `<td>${details.rating}/${details.season_max_rating}<br/>${details.league} (${details.reward} Loot Chests)</td>`;
 		table += '</tr>';
 
 		table += '<tr>';
@@ -109,11 +101,26 @@ async function display(player, cards) {
 		table += `<td>${dec}</td>`;
 		table += '</tr>';
 
+
 		table += '<tr>';
 		table += '<td><span class="names">ORB</span></td>';
 		table += `<td>${orb}</td>`;
 		table += '</tr>';
 
+
+		if (rc !== 'N/A') {
+			table += '<tr><td><span class="names">Resource Credits</span></td>';
+			table += `<td>${rc}%</td>`;
+			table += '</tr>';
+		}
+		table += '<tr>';
+		table += '<td><span class="names">Current Capture Rate</span></td>';
+		table += `<td>${ecr / 100}%</td>`;
+		table += '</tr>';
+
+		
+
+	
 		table += '<tr>';
 		table += '<td><span class="names">Potion Stats</span></td>';
 		table += `<td>Legendary Potion: ${legendary}<br/>Gold Potion: ${gold}</td>`;
@@ -151,10 +158,8 @@ async function display(player, cards) {
 		table += '<td><span class="names">Season Total Wins/Battles</span></td>';
 		table += `<td>${details.season_win}/${details.season_battle} = ${details.season_win_rate}%</td>`;
 		table += '</tr>';
-		table += '<tr>';
-		table += '<td><span class="names">Season League</span></td>';
-		table += `<td>${details.league} (${details.reward} Loot Chests)</td>`;
-		table += '</tr>';
+
+	
 
 		table += '<tr>';
 		table += '<td><span class="names">The Most Recent Loot Chests Claimed</span></td>';
@@ -337,11 +342,13 @@ function get_player_rc(player) {
 		axios.get("https://anyx.io/v1/rc_api/find_rc_accounts?accounts=" + player).then(function (response, error) {
 			if (!error && response.status == 200) {
 				let ac = response.data;
-				if (ac == null)
-					resolve('NA');
-				let rcPercent = ac.rc_accounts[0].rc_manabar.current_mana / ac.rc_accounts[0].max_rc * 100;
 
-				resolve(rcPercent.toFixed(2));
+				if (ac.code !== 200)
+					resolve('N/A');
+				else {
+					let rcPercent = ac.rc_accounts[0].rc_manabar.current_mana / ac.rc_accounts[0].max_rc * 100;
+					resolve(rcPercent.toFixed(2));
+				}
 			} else {
 				reject('get_player_rc error');
 			}
@@ -390,7 +397,6 @@ function get_collection(player) {
 				var info = response.data.cards;
 				resolve(info);
 			} else {
-				console.log(player)
 				reject('get_collection error')
 			}
 		});
@@ -464,7 +470,6 @@ function getPlayerDetails(player) {
 	return new Promise(async function (resolve, reject) {
 		let playerDetails = new Object();
 		let detail = await get_player_details(player);
-		console.log(detail)
 		if (detail != 'error') {
 			playerDetails.name = detail.name;
 			playerDetails.rating = detail.rating;
@@ -583,8 +588,8 @@ $(document).ready(async function () {
 
 		$('div#summary').html(summary + "</div>");
 		$('div#display').html(htmlString);
-		let x = document.getElementById("pleaseWait");
-		x.style.display = "none";
+		//let x = document.getElementById("pleaseWait");
+		//x.style.display = "none";
 
 	});
 });
