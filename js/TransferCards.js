@@ -173,7 +173,7 @@ function transferCards(account, postingKey, cards, to, hasKeychain) {
 			cards: cards
 		});
 		if (hasKeychain && postingKey === '') {
-			steem_keychain.requestCustomJson(account, 'sm_gift_cards', "Posting", json, 'Steem Monsters Card Transfer', function (response) {
+			hive_keychain.requestCustomJson(account, 'sm_gift_cards', "Posting", json, 'Splinterlands Card Transfer', function (response) {
 				if (response.error != null) {
 					resolve(response.error);
 				}
@@ -198,7 +198,7 @@ function cancelCards(account, postingKey, cards, hasKeychain) {
 			trx_ids: cards
 		});
 		if (hasKeychain && postingKey === '') {
-			steem_keychain.requestCustomJson(account, 'sm_cancel_sell', "Posting", json, 'Steem Monsters Cancel Market Orders', function (response) {
+			hive_keychain.requestCustomJson(account, 'sm_cancel_sell', "Posting", json, 'Splinterlands Cancel Market Orders', function (response) {
 				if (response.error != null) {
 					resolve(response.error);
 				}
@@ -231,7 +231,7 @@ function sellCardsAtMarketPrice(account, postingKey, cards, hasKeychain) {
 			log += `${cards[i].uid} listed at price ${cards[i].price}\n`;
 		}
 		if (hasKeychain && postingKey === '') {
-			steem_keychain.requestCustomJson(account, 'sm_sell_cards', "Posting", JSON.stringify(json), 'Steem Monsters Card Sell', function (response) {
+			hive_keychain.requestCustomJson(account, 'sm_sell_cards', "Posting", JSON.stringify(json), 'Splinterlands Card Sell', function (response) {
 				if (response.error != null) {
 					resolve(response.error);
 				}
@@ -288,7 +288,7 @@ $('#transfer').submit(async function (e) {
 		$("#username").focus();
 		return;
 	}
-	if (window.steem_keychain) {
+	if (window.hive_keychain) {
 		hasKeychain = true;
 	}
 	if (postingKey == '' && !hasKeychain) {
