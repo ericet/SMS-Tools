@@ -188,7 +188,7 @@ async function display(player, cards) {
 
 function get_player_details(player) {
 	return new Promise(function (resolve, reject) {
-		const url = 'https://steemmonsters.com/players/details?name=' + player;
+		const url = 'https://game-api.splinterlands.com/players/details?name=' + player;
 		axios.get(url).then(function (response) {
 			if (!response.data.error) {
 				resolve(response.data)
@@ -202,7 +202,7 @@ function get_player_details(player) {
 
 function get_player_quests(player) {
 	return new Promise(function (resolve, reject) {
-		const url = 'https://steemmonsters.com/players/quests?username=' + player;
+		const url = 'https://game-api.splinterlands.com/players/quests?username=' + player;
 		axios.get(url).then(function (response) {
 			if (!response.data.error) {
 				resolve(response.data)
@@ -217,7 +217,7 @@ function get_player_quests(player) {
 
 function getClaimIds(player) {
 	return new Promise(function (resolve, reject) {
-		const url = "https://api.steemmonsters.io/players/history?username=" + player + "&from_block=-1&limit=10&types=claim_reward";
+		const url = "https://game-api.splinterlands.com/players/history?username=" + player + "&from_block=-1&limit=10&types=claim_reward";
 		axios.get(url).then(function (response, error) {
 			if (!error && response.status == 200) {
 				let data = response.data;
@@ -327,7 +327,7 @@ function getImage(ids, cards) {
 
 function get_details() {
 	return new Promise(function (resolve, reject) {
-		const url = "https://steemmonsters.com/cards/get_details";
+		const url = "https://game-api.splinterlands.com/cards/get_details";
 		axios.get(url).then(function (response, error) {
 			if (!error && response.status == 200) {
 				let info = response.data;
@@ -358,7 +358,7 @@ function get_player_rc(player) {
 
 function get_balances(player) {
 	return new Promise(function (resolve, reject) {
-		axios.get("https://steemmonsters.com/players/balances?username=" + player).then(function (response, error) {
+		axios.get("https://game-api.splinterlands.com/players/balances?username=" + player).then(function (response, error) {
 			if (!error && response.status == 200) {
 				let balances = response.data
 				resolve(balances);
@@ -378,7 +378,7 @@ function find_cards(card_ids) {
 		} else {
 			card_ids_str = card_ids
 		}
-		axios.get('https://steemmonsters.com/cards/find?ids=' + card_ids_str).then(function (response, error) {
+		axios.get('https://game-api.splinterlands.com/cards/find?ids=' + card_ids_str).then(function (response, error) {
 			if (!error && response.status == 200) {
 				var info = response.data;
 				resolve(info);
@@ -392,7 +392,7 @@ function find_cards(card_ids) {
 
 function get_collection(player) {
 	return new Promise(function (resolve, reject) {
-		axios.get('https://steemmonsters.com/cards/collection/' + player).then(function (response, error) {
+		axios.get('https://game-api.splinterlands.com/cards/collection/' + player).then(function (response, error) {
 			if (!error && response.status == 200) {
 				var info = response.data.cards;
 				resolve(info);
