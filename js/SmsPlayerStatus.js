@@ -217,7 +217,7 @@ function get_player_quests(player) {
 
 function getClaimIds(player) {
 	return new Promise(function (resolve, reject) {
-		const url = "https://game-api.splinterlands.com/players/history?username=" + player + "&from_block=-1&limit=10&types=claim_reward";
+		const url = "https://api.steemmonsters.io/players/history?username=" + player + "&from_block=-1&limit=10&types=claim_reward";
 		axios.get(url).then(function (response, error) {
 			if (!error && response.status == 200) {
 				let data = response.data;
