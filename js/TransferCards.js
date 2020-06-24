@@ -11,7 +11,7 @@ async function checkAccountName(username) {
 
 function get_collection(player) {
 	return new Promise(async function (resolve, reject) {
-		axios.get("https://steemmonsters.com/cards/collection/" + player).then(function (response, error) {
+		axios.get("https://game-api.splinterlands.io/cards/collection/" + player).then(function (response, error) {
 			if (!error && response.status == 200) {
 				let data = response.data;
 				resolve(data.cards);
@@ -27,7 +27,7 @@ function get_collection(player) {
 function get_market_orders(player) {
 	return new Promise(async function (resolve, reject) {
 		let orders=[];
-		axios.get("https://steemmonsters.com/cards/collection/" + player).then(function (response, error) {
+		axios.get("https://game-api.splinterlands.io/cards/collection/" + player).then(function (response, error) {
 			if (!error && response.status == 200) {
 				let cards = response.data.cards;
 				for(let card of cards){
@@ -47,7 +47,7 @@ function get_market_orders(player) {
 
 function get_for_sale_grouped() {
 	return new Promise(async function (resolve, reject) {
-		axios.get("https://steemmonsters.com/market/for_sale_grouped").then(function (response, error) {
+		axios.get("https://game-api.splinterlands.io/market/for_sale_grouped").then(function (response, error) {
 			if (!error && response.status == 200) {
 				let data = response.data;
 				resolve(data);
