@@ -1,12 +1,15 @@
-const client = new dsteem.Client('https://api.hive.blog');
-steem.api.setOptions({
-	url: 'https://api.hive.blog'
-});
 
 // Checking if the already exists
-async function checkAccountName(username) {
-	const ac = await client.database.call('lookup_account_names', [[username]]);
-	return (ac[0] === null) ? false : true;
+function checkAccountName(account) {
+		return new Promise((resolve) => {
+			hive.api.getAccounts([account], function (err, result) {
+				if (!err && result) {
+					resolve((result[0] === undefined) ? false : true);
+				} else {
+					resolve(false);
+				}
+			});
+		});
 }
 
 function get_collection(player) {
@@ -180,7 +183,7 @@ function transferCards(account, postingKey, cards, to, hasKeychain) {
 				resolve(`${account} transferred ${cards.length} cards (${cards}) to ${to}`);
 			});
 		} else {
-			steem.broadcast.customJson(postingKey, [], [account], 'sm_gift_cards', json, (err, result) => {
+			hive.broadcast.customJson(postingKey, [], [account], 'sm_gift_cards', json, (err, result) => {
 				if (err) {
 					resolve(`Transfer failed:${err}`);
 				} else {
@@ -205,7 +208,7 @@ function cancelCards(account, postingKey, cards, hasKeychain) {
 				resolve(`${account} cancelled ${cards.length} market orders (${cards})`);
 			});
 		} else {
-			steem.broadcast.customJson(postingKey, [], [account], 'sm_cancel_sell', json, (err, result) => {
+			hive.broadcast.customJson(postingKey, [], [account], 'sm_cancel_sell', json, (err, result) => {
 				if (err) {
 					resolve(`Cancellation failed:${err}`);
 				} else {
@@ -238,7 +241,7 @@ function sellCardsAtMarketPrice(account, postingKey, cards, hasKeychain) {
 				resolve(log);
 			});
 		} else {
-			steem.broadcast.customJson(postingKey, [], [account], 'sm_sell_cards', JSON.stringify(json), (err, result) => {
+			hive.broadcast.customJson(postingKey, [], [account], 'sm_sell_cards', JSON.stringify(json), (err, result) => {
 				if (err) {
 					resolve(`Transfer failed:${err}`);
 				} else {
@@ -283,8 +286,9 @@ $('#transfer').submit(async function (e) {
 	}
 	const to = $("#to").val().trim();
 	const selection = $("#selection").val();
-	if (steem.utils.validateAccountName(username) !== null) {
-		alert('Invalid Steem ID');
+	let isExist = await checkAccountName(username);
+	if (!isExist) {
+		logit($('#log'), username + " is an invalid HIVE ID");
 		$("#username").focus();
 		return;
 	}
@@ -297,7 +301,6 @@ $('#transfer').submit(async function (e) {
 		return;
 	}
 	let validAccount;
-	console.log(selection)
 	if (selection === 'market' || selection ==='cancel') {
 		validAccount = true;
 		
@@ -308,7 +311,7 @@ $('#transfer').submit(async function (e) {
 	if (validAccount) {
 		start(username, postingKey, selection, to, hasKeychain,percent);
 	} else {
-		logit($('#log'), username + " is an invalid steem ID");
+		logit($('#log'), to + " is an invalid HIVE ID");
 	}
 
 });
