@@ -72,7 +72,7 @@ async function start(account, postingKey, selection, to, hasKeychain,percent) {
 	else if(selection ==='cancel'){
 		orders = await get_market_orders(account);
 			let i, j, chunk, max = 40;
-			for (i = 0, j = orders.length; i < j; i += chunk) {
+			for (i = 0, j = orders.length; i < j; i += chunk.length) {
 				chunk = orders.slice(i, i + max);
 				let log = await cancelCards(account, postingKey, chunk, hasKeychain);
 				logit($('#log'), log)
@@ -104,7 +104,7 @@ async function start(account, postingKey, selection, to, hasKeychain,percent) {
 				}
 			}
 			let i, j, chunk, max = 20;
-			for (i = 0, j = sellCards.length; i < j; i += chunk) {
+			for (i = 0, j = sellCards.length; i < j; i += chunk.length) {
 				chunk = sellCards.slice(i, i + max);
 				let log = await sellCardsAtMarketPrice(account, postingKey, chunk, hasKeychain);
 				logit($('#log'), log);
@@ -117,7 +117,7 @@ async function start(account, postingKey, selection, to, hasKeychain,percent) {
 				cards.push(extraCards[i].uid);
 			}
 			let i, j, chunk, max = 40;
-			for (i = 0, j = cards.length; i < j; i += chunk) {
+			for (i = 0, j = cards.length; i < j; i += chunk.length) {
 				chunk = cards.slice(i, i + max);
 				let log = await transferCards(account, postingKey, chunk, to, hasKeychain);
 				logit($('#log'), log)
