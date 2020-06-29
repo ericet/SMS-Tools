@@ -1,7 +1,7 @@
 let isLoading = false;
 let totalRewards = 0;
 let totalDec = 0;
-let totalLegendary, totalGold, totalOrb = 0;
+let totalLegendary, totalGold, totalOrb = 0,totalUntamed=0;
 let leagues = [];
 let totalCommon = 0, totalCommonGold = 0, totalRare = 0, totalRareGold = 0, totalEpic = 0, totalEpicGold = 0, totalLegend = 0, totalLegendGold = 0;
 Date.prototype.addHours = function (h) {
@@ -69,6 +69,9 @@ async function display(player, cards) {
 			if (balances[i].token === 'ORB') {
 				orb = balances[i].balance;
 			}
+			if(balances[i].token === 'UNTAMED'){
+				untamed = balances[i].balance;
+			}
 
 		}
 		totalRewards += details.reward;
@@ -76,6 +79,7 @@ async function display(player, cards) {
 		totalLegendary += legendary;
 		totalGold += gold;
 		totalOrb += orb;
+		totalUntamed +=untamed;
 		let status;
 		let created_date;
 		let reset_time;
@@ -105,6 +109,10 @@ async function display(player, cards) {
 		table += '<tr>';
 		table += '<td><span class="names">ORB</span></td>';
 		table += `<td>${orb}</td>`;
+		table += '</tr>';
+		table += '<tr>';
+		table += '<td><span class="names">UNTAMED</span></td>';
+		table += `<td>${untamed}</td>`;
 		table += '</tr>';
 
 
@@ -554,7 +562,7 @@ $(document).ready(async function () {
 		let usernames = input.split(',');
 		let htmlString = '	<div class="panel-group" id="accordion">';
 		let cards = await get_details();
-		totalRewards = 0, totalDec = 0, totalLegendary = 0, totalGold = 0, totalOrb = 0, totalCommon = 0, totalCommonGold = 0, totalRare = 0, totalRareGold = 0, totalEpic = 0, totalEpicGold = 0, totalLegend = 0, totalLegendGold = 0;
+		totalRewards = 0, totalDec = 0, totalLegendary = 0, totalGold = 0, totalOrb = 0, totalCommon = 0, totalCommonGold = 0, totalRare = 0, totalRareGold = 0, totalEpic = 0, totalEpicGold = 0, totalLegend = 0, totalLegendGold = 0,totalUntamed=0;
 		leagues = [];
 		for (let i in usernames) {
 			let username = usernames[i];
@@ -574,6 +582,7 @@ $(document).ready(async function () {
 			<div class="main">Total DEC:${totalDec.toFixed(3)}</div>
 			<div class="main">Total Legendary/Gold Potion:${totalLegendary}/${totalGold}</div>
 			<div class="main">Total Orb:${totalOrb}</div>
+			<div class="main">Total Untamed:${totalUntamed}</div>
 
 		</div>
 		<div class="column">
