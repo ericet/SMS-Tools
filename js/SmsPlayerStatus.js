@@ -17,7 +17,7 @@ async function display(player, cards) {
 		let images = await getImage(ids, cards);
 		let rc = await get_player_rc(player);
 
-		let dec = 0, ecr = 0, legendary = 0, gold = 0, orb = 0;
+		let dec = 0, ecr = 0, legendary = 0, gold = 0, orb = 0,untamed=0;
 		let common = 0, common_gold = 0, rare = 0, rare_gold = 0, epic = 0, epic_gold = 0, legend = 0, legend_gold = 0;
 		for (let [k, v] of rarityMap) {
 			if (k === 1) {
