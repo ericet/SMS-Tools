@@ -64,7 +64,7 @@ function get_for_sale_grouped() {
 
 }
 
-async function start(account, postingKey, selection, to, hasKeychain,percent) {
+async function start(account, activeKey, selection, to, hasKeychain,percent) {
 	let collection = await get_collection(account);
 	let extraCards = [];
 	let orders =[];
@@ -77,7 +77,7 @@ async function start(account, postingKey, selection, to, hasKeychain,percent) {
 			let i, j, chunk, max = 40;
 			for (i = 0, j = orders.length; i < j; i += chunk.length) {
 				chunk = orders.slice(i, i + max);
-				let log = await cancelCards(account, postingKey, chunk, hasKeychain);
+				let log = await cancelCards(account, activeKey, chunk, hasKeychain);
 				logit($('#log'), log)
 			}
 	
@@ -109,7 +109,7 @@ async function start(account, postingKey, selection, to, hasKeychain,percent) {
 			let i, j, chunk, max = 20;
 			for (i = 0, j = sellCards.length; i < j; i += chunk.length) {
 				chunk = sellCards.slice(i, i + max);
-				let log = await sellCardsAtMarketPrice(account, postingKey, chunk, hasKeychain);
+				let log = await sellCardsAtMarketPrice(account, activeKey, chunk, hasKeychain);
 				logit($('#log'), log);
 			}
 			
@@ -122,7 +122,7 @@ async function start(account, postingKey, selection, to, hasKeychain,percent) {
 			let i, j, chunk, max = 40;
 			for (i = 0, j = cards.length; i < j; i += chunk.length) {
 				chunk = cards.slice(i, i + max);
-				let log = await transferCards(account, postingKey, chunk, to, hasKeychain);
+				let log = await transferCards(account, activeKey, chunk, to, hasKeychain);
 				logit($('#log'), log)
 			}
 			
@@ -169,21 +169,21 @@ function hasAdded(cards, card) {
 
 }
 
-function transferCards(account, postingKey, cards, to, hasKeychain) {
+function transferCards(account, activeKey, cards, to, hasKeychain) {
 	return new Promise(async function (resolve, reject) {
 		var json = JSON.stringify({
 			to: to,
 			cards: cards
 		});
-		if (hasKeychain && postingKey === '') {
-			hive_keychain.requestCustomJson(account, 'sm_gift_cards', "Posting", json, 'Splinterlands Card Transfer', function (response) {
+		if (hasKeychain && activeKey === '') {
+			hive_keychain.requestCustomJson(account, 'sm_gift_cards', "Active", json, 'Splinterlands Card Transfer', function (response) {
 				if (response.error != null) {
 					resolve(response.error);
 				}
 				resolve(`${account} transferred ${cards.length} cards (${cards}) to ${to}`);
 			});
 		} else {
-			hive.broadcast.customJson(postingKey, [], [account], 'sm_gift_cards', json, (err, result) => {
+			hive.broadcast.customJson([], activeKey, [account], 'sm_gift_cards', json, (err, result) => {
 				if (err) {
 					resolve(`Transfer failed:${err}`);
 				} else {
@@ -195,20 +195,20 @@ function transferCards(account, postingKey, cards, to, hasKeychain) {
 	});
 }
 
-function cancelCards(account, postingKey, cards, hasKeychain) {
+function cancelCards(account, activeKey, cards, hasKeychain) {
 	return new Promise(async function (resolve, reject) {
 		var json = JSON.stringify({
 			trx_ids: cards
 		});
-		if (hasKeychain && postingKey === '') {
-			hive_keychain.requestCustomJson(account, 'sm_cancel_sell', "Posting", json, 'Splinterlands Cancel Market Orders', function (response) {
+		if (hasKeychain && activeKey === '') {
+			hive_keychain.requestCustomJson(account, 'sm_cancel_sell', "Active", json, 'Splinterlands Cancel Market Orders', function (response) {
 				if (response.error != null) {
 					resolve(response.error);
 				}
 				resolve(`${account} cancelled ${cards.length} market orders (${cards})`);
 			});
 		} else {
-			hive.broadcast.customJson(postingKey, [], [account], 'sm_cancel_sell', json, (err, result) => {
+			hive.broadcast.customJson([], activeKey, [account], 'sm_cancel_sell', json, (err, result) => {
 				if (err) {
 					resolve(`Cancellation failed:${err}`);
 				} else {
@@ -220,7 +220,7 @@ function cancelCards(account, postingKey, cards, hasKeychain) {
 	});
 }
 
-function sellCardsAtMarketPrice(account, postingKey, cards, hasKeychain) {
+function sellCardsAtMarketPrice(account, activeKey, cards, hasKeychain) {
 	return new Promise(async function (resolve, reject) {
 		var json = [];
 		let log = '';
@@ -233,15 +233,15 @@ function sellCardsAtMarketPrice(account, postingKey, cards, hasKeychain) {
 			})
 			log += `${cards[i].uid} listed at price ${cards[i].price}\n`;
 		}
-		if (hasKeychain && postingKey === '') {
-			hive_keychain.requestCustomJson(account, 'sm_sell_cards', "Posting", JSON.stringify(json), 'Splinterlands Card Sell', function (response) {
+		if (hasKeychain && activeKey === '') {
+			hive_keychain.requestCustomJson(account, 'sm_sell_cards', "Active", JSON.stringify(json), 'Splinterlands Card Sell', function (response) {
 				if (response.error != null) {
 					resolve(response.error);
 				}
 				resolve(log);
 			});
 		} else {
-			hive.broadcast.customJson(postingKey, [], [account], 'sm_sell_cards', JSON.stringify(json), (err, result) => {
+			hive.broadcast.customJson([], activeKey, [account], 'sm_sell_cards', JSON.stringify(json), (err, result) => {
 				if (err) {
 					resolve(`Transfer failed:${err}`);
 				} else {
@@ -279,7 +279,7 @@ $('#transfer').submit(async function (e) {
 	e.preventDefault();
 	let hasKeychain = false;
 	const username = $("#username").val().trim();
-	const postingKey = $('#posting-key').val().trim();
+	const activeKey = $('#active-key').val().trim();
 	const percent =$("#amount").val().trim();
 	if(percent.length===0){
 		percent=5;
@@ -295,9 +295,9 @@ $('#transfer').submit(async function (e) {
 	if (window.hive_keychain) {
 		hasKeychain = true;
 	}
-	if (postingKey == '' && !hasKeychain) {
-		alert('Your Private Posting Key is missing.');
-		$("#posting-key").focus();
+	if (activeKey == '' && !hasKeychain) {
+		alert('Your Private Active Key is missing.');
+		$("#active-key").focus();
 		return;
 	}
 	let validAccount;
@@ -309,7 +309,7 @@ $('#transfer').submit(async function (e) {
 		validAccount = await checkAccountName(to);
 	}
 	if (validAccount) {
-		start(username, postingKey, selection, to, hasKeychain,percent);
+		start(username, activeKey, selection, to, hasKeychain,percent);
 	} else {
 		logit($('#log'), to + " is an invalid HIVE ID");
 	}
