@@ -183,7 +183,7 @@ function transferCards(account, activeKey, cards, to, hasKeychain) {
 				resolve(`${account} transferred ${cards.length} cards (${cards}) to ${to}`);
 			});
 		} else {
-			hive.broadcast.customJson([], activeKey, [account], 'sm_gift_cards', json, (err, result) => {
+			hive.broadcast.customJson(activeKey, [account], [], 'sm_gift_cards', json, (err, result) => {
 				if (err) {
 					resolve(`Transfer failed:${err}`);
 				} else {
@@ -208,7 +208,7 @@ function cancelCards(account, activeKey, cards, hasKeychain) {
 				resolve(`${account} cancelled ${cards.length} market orders (${cards})`);
 			});
 		} else {
-			hive.broadcast.customJson([], activeKey, [account], 'sm_cancel_sell', json, (err, result) => {
+			hive.broadcast.customJson(activeKey, [account], [], 'sm_cancel_sell', json, (err, result) => {
 				if (err) {
 					resolve(`Cancellation failed:${err}`);
 				} else {
@@ -241,7 +241,7 @@ function sellCardsAtMarketPrice(account, activeKey, cards, hasKeychain) {
 				resolve(log);
 			});
 		} else {
-			hive.broadcast.customJson([], activeKey, [account], 'sm_sell_cards', JSON.stringify(json), (err, result) => {
+			hive.broadcast.customJson(activeKey, [account], [], 'sm_sell_cards', JSON.stringify(json), (err, result) => {
 				if (err) {
 					resolve(`Transfer failed:${err}`);
 				} else {
